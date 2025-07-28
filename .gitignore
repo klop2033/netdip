@@ -1,0 +1,8 @@
+authorized_key.json
+terraform.tfstate.backup
+cloud-init.yml
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+hosts.ini
+ansible/*
