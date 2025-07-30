@@ -116,14 +116,14 @@ curl *ip address Application Load Balancer*
 ```
 http://*ip address VPS zabbix:8080/
 ```
-![6](scrn/zab2.png)
+![6](scrn/zb2.png)
 
-![7](scrn/zab4.png)
+![7](scrn/zb4.png)
 
-![8](scrn/zab5.png)
+![8](scrn/zb5.png)
 
-![9](scrn/zab3.png)
+![9](scrn/zb3.png)
 
-![10](scrn/zab6.png)
+![10](scrn/zb6.png)
 
 
