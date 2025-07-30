@@ -112,7 +112,7 @@ resource "yandex_vpc_security_group" "zabbix" {
     description    = "Allow 0.0.0.0/0"
     protocol       = "TCP"
     v4_cidr_blocks = ["0.0.0.0/0"]
-    port           = 80
+    port           = 8080
   }
   egress {
     description    = "Permit ANY"

@@ -103,3 +103,27 @@ curl *ip address Application Load Balancer*
 ## Мониторинг
 
 ### Zabbix agent
+
+Готовим Playbook для установки zabbix_agenta (ansible/playbok/zabbix_agent.yml). 
+
+![5](scrn/zab1.png)
+
+### Zabbix server
+
+Устонавливаем сервер (ansible/plabook/zabbix_server.yml).Авторизумся.Настраиваем автоматический поиск в сетях "Zabbix-agent". Настраиваем атоматическую регестрацию хостов.Настраиваем дашбоорт 
+Сервер доступен по адрессу
+
+```
+http://*ip address VPS zabbix:8080/
+```
+![6](scrn/zab2.png)
+
+![7](scrn/zab4.png)
+
+![8](scrn/zab5.png)
+
+![9](scrn/zab3.png)
+
+![10](scrn/zab6.png)
+
+

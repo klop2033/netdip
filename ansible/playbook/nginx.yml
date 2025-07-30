@@ -1,0 +1,55 @@
+---
+- name: Install and configure NGINX
+  hosts: nginx_servers
+  become: true
+  
+  vars:
+    # Настройки роли nginxinc.nginx
+    nginx_remove_default_vhost: true  # Удалить дефолтный конфиг
+    nginx_http_template_enable: true
+    nginx_http_template:
+      mysite:  
+        template_file: "mysite.conf.j2"
+        conf_file_name: "mysite.conf"
+        conf_file_location: "/etc/nginx/conf.d/"
+
+  roles:
+    - role: nginxinc.nginx
+
+  tasks:
+    - name: Удаление стандартной страницы
+      ansible.builtin.file:
+        path: /usr/share/nginx/html/index.html
+        state: absent
+
+- name: Копируем файлы взамен стандартной страницы
+  hosts: nginx_server1
+  become: true
+  
+  tasks:
+    - name: Копирование файлов для server1
+      ansible.builtin.copy:
+        src: "files/server1/"
+        dest: "/usr/share/nginx/html"
+        mode: '0644'
+
+- name: Копируем файлы взамен стандартной страницы
+  hosts: nginx_server2
+  become: true
+  
+  tasks:
+    - name: Копирование файлов для server2
+      ansible.builtin.copy:
+        src: "files/server2/"
+        dest: "/usr/share/nginx/html"
+        mode: '0644'
+
+- name: Restart Nginx
+  hosts: nginx_servers
+  become: true
+  
+  tasks:
+    - name: Перезагрузка Nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restarted

@@ -1,0 +1,110 @@
+---
+- name: Install and configure Zabbix server with PostgreSQL
+  hosts: zabbix_servers
+  become: yes
+  vars:
+    zabbix_version: "7.4"
+    db_name: "zabbix"
+    db_user: "zabbix"
+    db_password: "zabbix"
+    server_name: "zabbix.example.com"
+    listen_port: "8080"
+
+  tasks:
+    # Установка PostgreSQL
+    - name: Install PostgreSQL
+      ansible.builtin.apt:
+        name:
+          - postgresql
+        state: present
+        update_cache: yes
+
+    - name: Ensure PostgreSQL service is running
+      ansible.builtin.service:
+        name: postgresql
+        state: started
+        enabled: yes
+
+    # Установка Zabbix репозитория
+    - name: Download Zabbix repository package
+      ansible.builtin.get_url:
+        url: "https://repo.zabbix.com/zabbix/{{ zabbix_version }}/release/debian/pool/main/z/zabbix-release/zabbix-release_latest_{{ zabbix_version }}+debian12_all.deb"
+        dest: "/tmp/zabbix-release.deb"
+        mode: '0644'
+
+    - name: Install Zabbix repository
+      ansible.builtin.apt:
+        deb: "/tmp/zabbix-release.deb"
+
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    # Установка компонентов Zabbix
+    - name: Install Zabbix packages
+      ansible.builtin.apt:
+        name:
+          - zabbix-server-pgsql
+          - zabbix-frontend-php
+          - php8.2-pgsql
+          - zabbix-nginx-conf
+          - zabbix-sql-scripts
+          - zabbix-agent
+        state: present
+
+    # Настройка PostgreSQL через команды
+    - name: Создание пользователя
+      ansible.builtin.shell: |
+        sudo -u postgres psql -c "CREATE USER {{ db_user }} WITH PASSWORD '{{ db_password }}';"
+      args:
+        executable: /bin/bash
+
+    - name: Создание БД 
+      ansible.builtin.shell:
+        sudo -u postgres psql -c "CREATE DATABASE {{ db_name }} OWNER {{ db_user }};"
+      args:
+        executable: /bin/bash
+
+    - name: Импорт схемы
+      ansible.builtin.shell:
+        sudo -u zabbix zcat /usr/share/zabbix/sql-scripts/postgresql/server.sql.gz | sudo -u zabbix psql {{ db_name }}
+      args:
+        executable: /bin/bash
+
+
+    # Настройка Zabbix server
+    - name: Configure Zabbix server DB connection
+      ansible.builtin.lineinfile:
+        path: /etc/zabbix/zabbix_server.conf
+        regexp: '^# DBPassword='
+        line: ' DBPassword={{ db_password }}'
+        backup: yes
+
+    # Настройка NGINX порт
+    - name: NGINX port
+      ansible.builtin.lineinfile:
+        path: /etc/zabbix/nginx.conf
+        regexp: '^#        listen          8080;'
+        line: '        listen          8080;'
+        backup: yes
+
+    # Настройка NGINX порт
+    - name: NGINX url
+      ansible.builtin.lineinfile:
+        path: /etc/zabbix/nginx.conf
+        regexp: '^#        server_name     example.com;'
+        line: '        server_name     example.com;'
+        backup: yes
+
+    # Рестарт сервисов
+    - name: Start and enable services
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        state: restarted
+        enabled: yes
+      loop:
+        - zabbix-server
+        - zabbix-agent
+        - nginx
+        - php8.2-fpm
+        - postgresql

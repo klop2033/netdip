@@ -5,4 +5,9 @@ cloud-init.yml
 .terraform.lock.hcl
 terraform.tfstate
 hosts.ini
-ansible/*
+ansible/ansible_collections/*
+ansible/galaxyproject.postgresql/*
+ansible/galaxyproject.postgresql_objects/*
+ansible/playbook/group_vars/*
+ansible.cfg
+hosts
