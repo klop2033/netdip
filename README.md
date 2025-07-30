@@ -110,20 +110,22 @@ curl *ip address Application Load Balancer*
 
 ### Zabbix server
 
-Устонавливаем сервер (ansible/plabook/zabbix_server.yml).Авторизумся.Настраиваем автоматический поиск в сетях "Zabbix-agent". Настраиваем атоматическую регестрацию хостов.Настраиваем дашбоорт 
+Устонавливаем сервер (ansible/plabook/zabbix_server.yml).Авторизумся. 
 Сервер доступен по адрессу
 
 ```
 http://*ip address VPS zabbix:8080/
 ```
+Авторизумся.
 ![6](scrn/zb2.png)
 
+Настраиваем автоматический поиск в сетях "Zabbix-agent".
 ![7](scrn/zb4.png)
-
+Настраиваем автоматическую регестрацию хостов.
 ![8](scrn/zb5.png)
-
 ![9](scrn/zb3.png)
 
+Настраиваем дашбоорт 
 ![10](scrn/zb6.png)
 
 
