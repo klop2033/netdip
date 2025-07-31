@@ -1,0 +1,93 @@
+---
+- name: Запуск Elasticsearch и Filebeat
+  hosts: elastic_servers,nginx_servers, kibana_servers
+  become: yes
+
+- name: Запуск Elasticsearch
+  hosts: elastic_servers
+  become: yes
+  vars:
+    es_version: "8.13.4"
+    es_data_dir: "/var/lib/elasticsearch"
+
+  tasks:
+    - name: Проверка Docker
+      command: docker --version
+      register: docker_check
+      ignore_errors: yes
+      changed_when: false
+
+    - name: Установка Docker (если нужно)
+      apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+      when: docker_check is failed
+
+    - name: Запуск Elasticsearch
+      docker_container:
+        name: elasticsearch
+        image: "elasticsearch:{{ es_version }}"
+        env:
+          discovery.type: "single-node"
+          ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+          xpack.security.enabled: "false"
+        ports:
+          - "9200:9200"
+          - "9300:9300"
+        volumes:
+          - "{{ es_data_dir }}:/usr/share/elasticsearch/data"
+        restart_policy: unless-stopped
+
+- name: Настройка Filebeat для Nginx
+  hosts: nginx_servers
+  become: yes
+  vars:
+    filebeat_version: "8.13.4"
+    elasticsearch_host: "ip ELK"  # Замените на реальный хост
+
+  tasks:
+    - name: Проверка Docker
+      command: docker --version
+      register: docker_check
+      ignore_errors: yes
+      changed_when: false
+
+    - name: Установка Docker (если нужно)
+      apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+      when: docker_check is failed
+
+    - name: Создание директории для конфигов
+      file:
+        path: "/etc/filebeat"
+        state: directory
+
+    - name: Настройка конфига Filebeat
+      copy:
+        dest: "/etc/filebeat/filebeat.yml"
+        content: |
+          filebeat.inputs:
+          - type: log
+            enabled: true
+            paths:
+              - /var/log/nginx/access.log
+              - /var/log/nginx/error.log
+            fields:
+              app: nginx
+            fields_under_root: true
+
+          output.elasticsearch:
+            hosts: ["{{ elasticsearch_host }}:9200"]
+
+    - name: Запуск Filebeat
+      docker_container:
+        name: filebeat
+        image: "elastic/filebeat:{{ filebeat_version }}"
+        user: "root"
+        volumes:
+          - "/var/log/nginx:/var/log/nginx:ro"
+          - "/etc/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro"
+        restart_policy: unless-stopped

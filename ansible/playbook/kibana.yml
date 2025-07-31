@@ -1,0 +1,39 @@
+---
+- name: Kibana
+  hosts: kibana_servers
+  become: yes
+  vars:
+    kibana_version: "8.12.0"  
+    kibana_port: "5601:5601"  
+    elasticsearch_url: "http://10.10.11.23:9200"  # Адрес Elasticsearch обязательно указать http://
+
+  tasks:
+    - name:  Docker
+      ansible.builtin.package:
+        name: docker-ce
+        state: present
+      when: ansible_facts['pkg_mgr'] == 'apt'
+
+    - name: Запуск Kibana в контейнере
+      community.docker.docker_container:
+        name: kibana
+        image: "docker.io/elastic/kibana:{{ kibana_version }}"
+        ports:
+          - "{{ kibana_port }}"
+        env:
+          ELASTICSEARCH_HOSTS: "{{ elasticsearch_url }}"
+          SERVER_HOST: "0.0.0.0"
+        restart_policy: unless-stopped
+        state: started
+
+    - name: Kibana start
+      ansible.builtin.uri:
+        url: "http://localhost:{{ kibana_port.split(':')[0] }}/api/status"
+        method: GET
+        status_code: 200
+        timeout: 10
+      register: kibana_status
+      until: kibana_status.status == 200
+      retries: 10
+      delay: 5
+      ignore_errors: yes
