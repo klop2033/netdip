@@ -11,3 +11,4 @@ ansible/galaxyproject.postgresql_objects/*
 ansible/playbook/group_vars/*
 ansible.cfg
 hosts
+elk3.yml

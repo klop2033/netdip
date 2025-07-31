@@ -232,7 +232,7 @@ resource "yandex_compute_instance" "kibana" {
   network_interface {
     subnet_id          = yandex_vpc_subnet.diplom_a.id #зона ВМ должна совпадать с зоной subnet!!!
     nat                = true
-    security_group_ids = [yandex_vpc_security_group.LAN.id, yandex_vpc_security_group.bastion.id]
+    security_group_ids = [yandex_vpc_security_group.LAN.id, yandex_vpc_security_group.kibana.id]
   }
 }
 ### Конец VPS "kibana" ###

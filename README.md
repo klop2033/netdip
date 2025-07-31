@@ -129,3 +129,26 @@ http://*ip address VPS zabbix:8080/
 ![10](scrn/zb6.png)
 
 
+### ELK KIBNA Filebeat
+
+
+Для запуска ELK, Filebiate, Kibana используем docker и образы c docker hub  [filebeat](https://hub.docker.com/r/elastic/filebeat) и [elasticsearch](https://hub.docker.com/r/elastic/elasticsearch), [Kibana](https://hub.docker.com/_/kibana) так как репазитории заблокирован. 
+
+Готовим плейбуки. Устонавливем докер и нужные контейнеры. filebeat на web-servers. elasticsearch на elk-servers и тд. (запускаем два плейбука ELK + Filebat, Kibana)
+
+playbook/elk.yml
+playbook/kibana.yml 
+
+
+![11](scrn/kibana.png)
+
+
+#### zabbix
+```
+http://84.252.138.48:8080/
+```
+
+#### kibana
+```
+http://62.84.117.115:5601/
+```
