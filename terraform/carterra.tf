@@ -16,6 +16,7 @@ resource "yandex_compute_instance" "bastion" {
   hostname    = "bastion" #формирует FDQN имя хоста, без hostname будет сгенрировано случаное имя.
   platform_id = "standard-v3"
   zone        = "ru-central1-a" #зона ВМ должна совпадать с зоной subnet!!! ( VPS создаеться в netologydz_a )
+  allow_stopping_for_update = true
 
   resources {
     cores         = 2
@@ -36,7 +37,7 @@ resource "yandex_compute_instance" "bastion" {
     serial-port-enable = 1
   }
   
-  scheduling_policy { preemptible = true }  # Прерываемость VPS (Вырубиться через 24 часа)
+  scheduling_policy { preemptible = false }  # Прерываемость VPS (Вырубиться через 24 часа)
 
   network_interface {
     subnet_id          = yandex_vpc_subnet.diplom_a.id #зона ВМ должна совпадать с зоной subnet!!!
@@ -52,6 +53,7 @@ resource "yandex_compute_instance" "nginx1" {
   hostname    = "nginx1" #формирует FDQN имя хоста, без hostname будет сгенрировано случаное имя.
   platform_id = "standard-v3"
   zone        = "ru-central1-a" #зона ВМ должна совпадать с зоной subnet!!! ( VPS создаеться netologydz_a )
+  allow_stopping_for_update = true
 
   resources {
     cores         = 2
@@ -82,7 +84,7 @@ resource "yandex_compute_instance" "nginx1" {
 #       - ##Сюда ключ ssh-ed25519 ##
 
 
-  scheduling_policy { preemptible = true }  # Прерываемость VPS (Вырубиться через 24 часа)
+  scheduling_policy { preemptible = false }  # Прерываемость VPS (Вырубиться через 24 часа)
 
   network_interface {
     subnet_id          = yandex_vpc_subnet.diplom_a.id #зона ВМ должна совпадать с зоной subnet!!!
@@ -99,6 +101,7 @@ resource "yandex_compute_instance" "nginx2" {
   hostname    = "nginx2" #формирует FDQN имя хоста, без hostname будет сгенрировано случаное имя.
   platform_id = "standard-v3"
   zone        = "ru-central1-b" #зона ВМ должна совпадать с зоной subnet!!!
+  allow_stopping_for_update = true
 
   resources {
     cores         = 2
@@ -119,7 +122,7 @@ resource "yandex_compute_instance" "nginx2" {
     serial-port-enable = 1                          # Включение консоли в облаке
   }
 
-  scheduling_policy { preemptible = true }  # Прерываемость VPS (Вырубиться через 24 часа)
+  scheduling_policy { preemptible = false }  # Прерываемость VPS (Вырубиться через 24 часа)
 
   network_interface {
     subnet_id          = yandex_vpc_subnet.diplom_b.id
@@ -134,6 +137,7 @@ resource "yandex_compute_instance" "elastik" {
   hostname    = "elastik" #формирует FDQN имя хоста, без hostname будет сгенрировано случаное имя.
   platform_id = "standard-v3"
   zone        = "ru-central1-b" #зона ВМ должна совпадать с зоной subnet!!!
+  allow_stopping_for_update = true
 
   resources {
     cores         = 2
@@ -154,7 +158,7 @@ resource "yandex_compute_instance" "elastik" {
     serial-port-enable = 1                          # Включение консоли в облаке
   }
 
-  scheduling_policy { preemptible = true }  # Прерываемость VPS (Вырубиться через 24 часа)
+  scheduling_policy { preemptible = false }  # Прерываемость VPS (Вырубиться через 24 часа)
 
   network_interface {
     subnet_id          = yandex_vpc_subnet.diplom_b.id
@@ -171,6 +175,7 @@ resource "yandex_compute_instance" "zabbix" {
   hostname    = "zabbix" #формирует FDQN имя хоста, без hostname будет сгенрировано случаное имя.
   platform_id = "standard-v3"
   zone        = "ru-central1-b" #зона ВМ должна совпадать с зоной subnet!!! ( VPS создаеться в netologydz_a )
+  allow_stopping_for_update = true
 
   resources {
     cores         = 2
@@ -191,7 +196,7 @@ resource "yandex_compute_instance" "zabbix" {
     serial-port-enable = 1
   }
   
-  scheduling_policy { preemptible = true }  # Прерываемость VPS (Вырубиться через 24 часа)
+  scheduling_policy { preemptible = false }  # Прерываемость VPS (Вырубиться через 24 часа)
 
   network_interface {
     subnet_id          = yandex_vpc_subnet.diplom_b.id #зона ВМ должна совпадать с зоной subnet!!!
@@ -207,6 +212,7 @@ resource "yandex_compute_instance" "kibana" {
   hostname    = "kibana" #формирует FDQN имя хоста, без hostname будет сгенрировано случаное имя.
   platform_id = "standard-v3"
   zone        = "ru-central1-a" #зона ВМ должна совпадать с зоной subnet!!! ( VPS создаеться в netologydz_a )
+  allow_stopping_for_update = true
 
   resources {
     cores         = 2
@@ -227,7 +233,7 @@ resource "yandex_compute_instance" "kibana" {
     serial-port-enable = 1
   }
   
-  scheduling_policy { preemptible = true }  # Прерываемость VPS (Вырубиться через 24 часа)
+  scheduling_policy { preemptible = false }  # Прерываемость VPS (Вырубиться через 24 часа)
 
   network_interface {
     subnet_id          = yandex_vpc_subnet.diplom_a.id #зона ВМ должна совпадать с зоной subnet!!!
